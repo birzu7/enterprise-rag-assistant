@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
+.venv/
+venv/
+
+# VS Code
+.vscode/
+
+# Logs
+logs/
+
+# MLflow
+mlartifacts/
+mlflow.db
+
+# Vector DB
+index/
+
+# OS files
+.DS_Store
+Thumbs.db

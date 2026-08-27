@@ -1,0 +1,9 @@
+pypdf
+typing-extensions
+sentence-transformers
+faiss-cpu
+requests
+fastapi
+uvicorn
+streamlit
+mlflow
