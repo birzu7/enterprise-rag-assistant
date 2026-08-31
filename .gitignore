@@ -19,7 +19,7 @@ mlartifacts/
 mlflow.db
 
 # Vector DB
-index/
+#index/
 
 # OS files
 .DS_Store
