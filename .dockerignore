@@ -4,17 +4,16 @@ __pycache__/
 *.pyd
 
 .git/
-.gitignore
-
-.venv/
-venv/
-env/
-
-mlruns/
-mlartifacts/
-
-.pytest_cache/
 .vscode/
 
-*.log
-.DS_Store
+logs/
+airflow/
+mlartifacts/
+
+index/
+
+.env
+
+notebooks/
+
+tests/
