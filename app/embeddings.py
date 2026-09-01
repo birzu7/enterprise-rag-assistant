@@ -4,9 +4,23 @@ from app.load_documents import load_all_pdfs
 from app.config import EMBEDDING_MODEL
 
 
-embedding_model = SentenceTransformer(
-    EMBEDDING_MODEL
-)
+embedding_model = None
+
+
+def get_embedding_model():
+    """
+    Lazy-load the embedding model only when needed.
+    This reduces memory usage during application startup.
+    """
+
+    global embedding_model
+
+    if embedding_model is None:
+        embedding_model = SentenceTransformer(
+            EMBEDDING_MODEL
+        )
+
+    return embedding_model
 
 
 def generate_embedding(text: str):
@@ -14,7 +28,9 @@ def generate_embedding(text: str):
     Generate one normalized embedding vector.
     """
 
-    return embedding_model.encode(
+    model = get_embedding_model()
+
+    return model.encode(
         text,
         normalize_embeddings=True,
     )
@@ -33,7 +49,9 @@ def generate_embeddings(documents: list[dict]) -> list[dict]:
         for document in documents
     ]
 
-    embeddings = embedding_model.encode(
+    model = get_embedding_model()
+
+    embeddings = model.encode(
         texts,
         normalize_embeddings=True,
         show_progress_bar=True,
