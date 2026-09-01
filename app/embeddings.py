@@ -1,5 +1,3 @@
-from sentence_transformers import SentenceTransformer
-
 from app.load_documents import load_all_pdfs
 from app.config import EMBEDDING_MODEL
 
@@ -10,12 +8,18 @@ embedding_model = None
 def get_embedding_model():
     """
     Lazy-load the embedding model only when needed.
-    This reduces memory usage during application startup.
+    This prevents sentence-transformers and torch
+    from loading during API startup.
     """
 
     global embedding_model
 
     if embedding_model is None:
+
+        from sentence_transformers import (
+            SentenceTransformer,
+        )
+
         embedding_model = SentenceTransformer(
             EMBEDDING_MODEL
         )
@@ -36,7 +40,9 @@ def generate_embedding(text: str):
     )
 
 
-def generate_embeddings(documents: list[dict]) -> list[dict]:
+def generate_embeddings(
+    documents: list[dict],
+) -> list[dict]:
     """
     Generate embeddings for all document chunks in one batch.
     """
@@ -64,7 +70,10 @@ def generate_embeddings(documents: list[dict]) -> list[dict]:
         embeddings,
     ):
         embedded_document = document.copy()
-        embedded_document["embedding"] = embedding
+
+        embedded_document[
+            "embedding"
+        ] = embedding
 
         embedded_documents.append(
             embedded_document
@@ -77,8 +86,10 @@ if __name__ == "__main__":
 
     documents = load_all_pdfs()
 
-    embedded_documents = generate_embeddings(
-        documents
+    embedded_documents = (
+        generate_embeddings(
+            documents
+        )
     )
 
     print(
@@ -87,14 +98,18 @@ if __name__ == "__main__":
 
     print("-" * 50)
 
-    first_document = embedded_documents[0]
-
-    print(
-        f"File: {first_document['source_name']}"
+    first_document = (
+        embedded_documents[0]
     )
 
     print(
-        f"Chunk Index: {first_document['chunk_index']}"
+        f"File: "
+        f"{first_document['source_name']}"
+    )
+
+    print(
+        f"Chunk Index: "
+        f"{first_document['chunk_index']}"
     )
 
     print(
@@ -102,10 +117,10 @@ if __name__ == "__main__":
         f"{first_document['embedding'].shape}"
     )
 
-    print(
-        f"First 10 Values:"
-    )
+    print("First 10 Values:")
 
     print(
-        first_document["embedding"][:10]
+        first_document[
+            "embedding"
+        ][:10]
     )
