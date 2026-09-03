@@ -1,79 +1,37 @@
 from app.load_documents import load_all_pdfs
-from app.config import EMBEDDING_MODEL
-
-
-embedding_model = None
-
-
-def get_embedding_model():
-    """
-    Lazy-load the embedding model only when needed.
-    This prevents sentence-transformers and torch
-    from loading during API startup.
-    """
-
-    global embedding_model
-
-    if embedding_model is None:
-
-        from sentence_transformers import (
-            SentenceTransformer,
-        )
-
-        embedding_model = SentenceTransformer(
-            EMBEDDING_MODEL
-        )
-
-    return embedding_model
 
 
 def generate_embedding(text: str):
     """
-    Generate one normalized embedding vector.
+    Temporary test embedding.
+
+    Returns a fake 384-dimensional vector so we can
+    determine whether sentence-transformers is causing
+    the Render crash.
     """
 
-    model = get_embedding_model()
-
-    return model.encode(
-        text,
-        normalize_embeddings=True,
-    )
+    return [0.0] * 384
 
 
 def generate_embeddings(
     documents: list[dict],
 ) -> list[dict]:
     """
-    Generate embeddings for all document chunks in one batch.
+    Temporary batch embedding generator.
     """
 
     if not documents:
         return []
 
-    texts = [
-        document["text"]
-        for document in documents
-    ]
-
-    model = get_embedding_model()
-
-    embeddings = model.encode(
-        texts,
-        normalize_embeddings=True,
-        show_progress_bar=True,
-    )
-
     embedded_documents = []
 
-    for document, embedding in zip(
-        documents,
-        embeddings,
-    ):
+    for document in documents:
+
         embedded_document = document.copy()
 
         embedded_document[
             "embedding"
-        ] = embedding
+        ] = [0.0] * 384
 
         embedded_documents.append(
             embedded_document
@@ -113,8 +71,8 @@ if __name__ == "__main__":
     )
 
     print(
-        f"Embedding Shape: "
-        f"{first_document['embedding'].shape}"
+        f"Embedding Length: "
+        f"{len(first_document['embedding'])}"
     )
 
     print("First 10 Values:")
